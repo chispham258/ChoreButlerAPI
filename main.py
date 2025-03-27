@@ -3,7 +3,6 @@ from langchain_community.document_loaders import PyPDFLoader, DirectoryLoader
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 import uuid
 import chromadb
-import os
 import numpy
 
 # Path
@@ -73,8 +72,11 @@ def is_rejection(answer: str) -> bool:
     answer_lower = answer.lower()
     return any(pattern in answer_lower for pattern in REJECTION_PATTERNS)
 
-api_key = "AIzaSyBXcwfz4KAHwHImehIltmcryrKrhlS5gfE"
+from dotenv import load_dotenv
+import os
 
+load_dotenv()
+API_KEY = os.getenv('API_KEY')
 # Link database
 
 from fastapi import FastAPI, Request
@@ -85,7 +87,6 @@ import fastapi
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     print("Loading resources...")
-    # collection = CreateChromaDB()
 
     embeddings = HuggingFaceEmbeddings(model_name='bkai-foundation-models/vietnamese-bi-encoder')
     vector_store = Chroma(
@@ -127,7 +128,7 @@ async def lifespan(app: FastAPI):
         max_tokens = 1024,
         max_retries = 2,
         top_p = 0.9,
-        google_api_key = api_key
+        google_api_key = API_KEY
     )
 
     # Create memory to maintain conversation
@@ -178,10 +179,6 @@ def generate(request : Request, prompt: Question):
         return {
             "answer": answer,
         }
-
-    return {
-        "answer" : answer
-    }
 
     self_update = request.app.state.self_update
     self_response = self_update.invoke({

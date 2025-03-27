@@ -1,55 +1,29 @@
 from fastapi.testclient import TestClient
 from main import app
-import gen_quest
 import time
 
-def gen_ask_api(ntest):
-    # print(question)
-    with TestClient(app) as client:
-        for i in range(ntest):
-            time.sleep(60)
-
-            gen_quest.make_quest()
-            question = [
-
-            ]
-
-            file_path = "question.txt"
-            with open(file_path, "r", encoding = 'utf-8') as file:
-                question_file = file.read().split("\n")
-                for quest in question_file:
-                    question.append(quest)
-
-            cnt = 0
-
-            for quest in question:
-                response = client.post("/ask", json = {
-                    "query": quest
-                })
-                cnt += 1
-                print(cnt)
-                # print("User : ", quest)
-                # print(response.status_code)
-                # print("Chatbot : ", response.json()["answer"])
-                # print("-" * 120)
-
 def test_ask_api():
-    # print(question)
     with TestClient(app) as client:
-        gen_quest.make_quest()
         question = [
-
+            'Ba con bảo con phải dọn phòng ăn giờ con cần làm những bước gì ạ?',
+            'Con muốn chăm sóc cây cảnh nhưng không biết bắt đầu từ đâu ạ?',
+            'Con muốn chăm sóc chuột hamster thì phải làm gì ạ?',
+            'Máy rửa chén xài như thế nào ạ?',
+            'Làm sao để sử dụng kéo cắt cành ạ?',
+            'Làm sao để giặt áo vest',
+            'Cách phơi đồ thể thao đúng cách',
+            'Vệ sinh máy ép trái cây như thế nào',
+            'Làm sao để lau dọn phòng khách',
+            'Cách bảo quản các loại đồ hộp',
+            'Nên sử dụng loại nước rửa đồ dùng học tập nào',
+            'Làm sao để giặt khăn trải bàn',
+            'Cách phơi đồ lụa đúng cách',
         ]
-
-        file_path = "question.txt"
-        with open(file_path, "r", encoding = 'utf-8') as file:
-            question_file = file.read().split("\n")
-            for quest in question_file:
-                question.append(quest)
 
         cnt = 0
 
         for quest in question:
+            time.sleep(5)
             response = client.post("/ask", json = {
                 "query": quest
             })
